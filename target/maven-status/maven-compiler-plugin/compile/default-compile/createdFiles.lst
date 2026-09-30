@@ -1,0 +1,14 @@
+com\cd\caidan\gui\MenuHolder.class
+com\cd\caidan\listener\MenuListener.class
+com\cd\caidan\command\CdCommand.class
+com\cd\caidan\util\ItemBuilder.class
+com\cd\caidan\gui\MenuManager$EditSession.class
+com\cd\caidan\listener\EntryItemListener.class
+com\cd\caidan\model\CommandEntry.class
+com\cd\caidan\config\ConfigManager.class
+com\cd\caidan\gui\MenuManager.class
+com\cd\caidan\gui\MenuHolder$Type.class
+com\cd\caidan\model\MenuItem.class
+com\cd\caidan\model\MenuPage.class
+com\cd\caidan\CaiDanPlugin.class
+com\cd\caidan\listener\ChatListener.class

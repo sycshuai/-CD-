@@ -1,0 +1,55 @@
+# ============================================================
+# [CD] 菜单插件配置文件 | Paper 1.21.11 | v1.0
+# 修改后执行 /cd reload 生效（需要 OP）
+# ============================================================
+
+# 菜单行数（1~6，默认 3）
+rows: 3
+
+# 入口物品（打开菜单的附魔书）
+# force: true 后入口物品会强制放入指定格子，
+# 玩家无法移动、拿起、丢弃，也无法放入铁砧、容器等地方
+entry:
+  enabled: true        # 是否在打开菜单时自动给予入口物品
+  force: false         # 是否强制锁定在指定格子
+  slot: 8              # 强制放入的物品栏格子（0~35，8 = 第九格）
+  material: ENCHANTED_BOOK
+  name: '&b&l[CD] &r&e菜单入口'
+  lore:
+    - '&7输入 &f/cd &7打开菜单'
+
+# ============================================================
+# 菜单页面（手动分页）
+# slot   : 物品在菜单 GUI 中的格子（从 0 开始，从左到右、从上到下）
+#          每页底部一行为导航栏，固定占用：
+#          第1格=上一页  第2格=下一页  倒数第2格=编辑(仅OP)  最后1格=关闭
+#          请勿把物品配置在这些格子上
+# material: 物品材质（Bukkit 材质名）
+# name    : 显示名称（支持 & 颜色代码）
+# lore    : 说明文字（支持 & 颜色代码）
+# commands: 点击执行的指令列表，可配置多条
+#           type: player  = 以玩家身份执行
+#           type: console = 以控制台身份执行
+#           command 中 %player% 会替换为玩家名，不要写前导 /
+# ============================================================
+pages:
+  - title: '&e&l[CD] 菜单 - 首页'
+    items:
+      - slot: 0
+        material: DIAMOND_SWORD
+        name: '&c&l示例武器'
+        lore:
+          - '&7点击获得一把钻石剑'
+        commands:
+          - type: player
+            command: 'give %player% diamond_sword 1'
+      - slot: 1
+        material: DIAMOND
+        name: '&b&l示例钻石'
+        lore:
+          - '&7点击获得 1 颗钻石（控制台执行）'
+        commands:
+          - type: console
+            command: 'give %player% diamond 1'
+  - title: '&e&l[CD] 菜单 - 第二页'
+    items: []

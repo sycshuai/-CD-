@@ -1,0 +1,21 @@
+name: CaiDan
+version: '1.2'
+main: com.cd.caidan.CaiDanPlugin
+api-version: '1.21'
+description: '[CD]菜单插件 - 支持多页菜单与管理员在线编辑 (Paper 1.21.11)'
+authors: [CD]
+website: https://papermc.io
+
+commands:
+  cd:
+    description: 打开[CD]菜单
+    usage: /cd [help|reload]
+    aliases: []
+
+permissions:
+  cd.use:
+    description: 允许使用 /cd 打开菜单
+    default: true
+  cd.admin:
+    description: 允许在线编辑菜单与重载配置
+    default: op
