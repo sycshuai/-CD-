@@ -32,7 +32,7 @@ public class CaiDanPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntryItemListener(this, configManager, menuManager), this);
         getServer().getPluginManager().registerEvents(new ChatListener(this, menuManager), this);
 
-        getLogger().info("[CD] 菜单插件已启用 (Paper 1.21.11, v1.2)");
+        getLogger().info("[CD] 菜单插件已启用 (Paper 1.21.11, v1.3)");
     }
 
     @Override

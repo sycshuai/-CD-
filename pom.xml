@@ -6,7 +6,7 @@
 
     <groupId>com.cd</groupId>
     <artifactId>caidan</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <name>CaiDan</name>
@@ -34,7 +34,7 @@
     </dependencies>
 
     <build>
-        <finalName>[CD]caidan1.21.11paper1.2</finalName>
+        <finalName>[CD]caidan1.21.11paper1.3</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -49,7 +49,7 @@
                     <archive>
                         <manifestEntries>
                             <Implementation-Title>[CD]菜单插件</Implementation-Title>
-                            <Implementation-Version>1.2</Implementation-Version>
+                            <Implementation-Version>1.3</Implementation-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>

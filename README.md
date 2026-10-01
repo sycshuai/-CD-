@@ -2,9 +2,12 @@
 
 适用于 **Paper 1.21.11** 的多页 GUI 菜单插件。支持管理员在游戏内**在线编辑**菜单：放置物品、命名、绑定点击指令，所有修改实时写入配置文件。
 
-- 插件文件：`[CD]caidan1.21.11paper1.2.jar`
+- 插件文件：`[CD]caidan1.21.11paper1.3.jar`
 - 运行要求：Paper 1.21.11 服务端，**Java 21+**
 
+> **v1.3 更新（2026-10-01）**
+> - 修复：`/cd reload`（及重启服务端）后菜单被重置为初始状态。根因是配置中的 `pages/items/commands` 为 YAML 列表，旧版用 `getConfigurationSection` 读取会返回空，现已改用 `getMapList` 正确解析，在线编辑的菜单在 reload/重启后完整保留
+>
 > **v1.2 更新（2026-09-30）**
 > - 修复：`server <服务器>` 等 Velocity/BungeeCord 代理换服指令无法执行（`performCommand` 只作用于后端，命令不会到达代理）。现自动改走 BungeeCord `Connect` 消息通道，由代理执行换服
 >
@@ -31,7 +34,7 @@
 
 ## 二、安装
 
-1. 将 `[CD]caidan1.21.11paper1.2.jar` 放入服务端 `plugins` 文件夹
+1. 将 `[CD]caidan1.21.11paper1.3.jar` 放入服务端 `plugins` 文件夹
 2. 重启服务端（或使用支持热加载的工具）
 3. 首次启动会自动生成 `plugins/CaiDan/config.yml`
 

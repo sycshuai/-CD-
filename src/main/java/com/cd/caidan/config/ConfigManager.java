@@ -8,7 +8,6 @@ import com.cd.caidan.util.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -81,18 +80,14 @@ public class ConfigManager {
         }
 
         pages.clear();
-        ConfigurationSection pagesSection = config.getConfigurationSection("pages");
-        if (pagesSection != null) {
-            for (String key : pagesSection.getKeys(false)) {
-                ConfigurationSection pageSec = pagesSection.getConfigurationSection(key);
-                if (pageSec == null) {
-                    continue;
-                }
-                MenuPage page = new MenuPage();
-                page.setTitle(pageSec.getString("title", "&e&l[CD] 菜单"));
-                loadItems(pageSec, page);
-                pages.add(page);
-            }
+        // pages / items / commands 在配置中是 YAML 列表（- 开头），
+        // 必须用 getMapList 读取；getConfigurationSection 只支持 Map 节点，
+        // 对 List 返回 null，会导致 reload 后菜单被重置为初始状态。
+        for (Map<?, ?> pageMap : config.getMapList("pages")) {
+            MenuPage page = new MenuPage();
+            page.setTitle(asString(pageMap.get("title"), "&e&l[CD] 菜单"));
+            loadItems(pageMap, page);
+            pages.add(page);
         }
         if (pages.isEmpty()) {
             MenuPage page = new MenuPage();
@@ -101,55 +96,77 @@ public class ConfigManager {
         }
     }
 
-    private void loadItems(ConfigurationSection pageSec, MenuPage page) {
-        ConfigurationSection itemsSection = pageSec.getConfigurationSection("items");
-        if (itemsSection == null) {
+    private void loadItems(Map<?, ?> pageMap, MenuPage page) {
+        Object itemsObj = pageMap.get("items");
+        if (!(itemsObj instanceof List)) {
             return;
         }
-        for (String key : itemsSection.getKeys(false)) {
-            ConfigurationSection itemSec = itemsSection.getConfigurationSection(key);
-            if (itemSec == null) {
+        for (Object itemObj : (List<?>) itemsObj) {
+            if (!(itemObj instanceof Map<?, ?> itemMap)) {
                 continue;
             }
             MenuItem item = new MenuItem();
-            int slot = itemSec.getInt("slot", -1);
+            int slot = asInt(itemMap.get("slot"), -1);
             if (slot < 0 || slot >= getTotalSlots() || isNavigationSlot(slot)) {
-                plugin.getLogger().warning("配置项 pages." + pageSec.getName() + ".items." + key
-                        + " 的槽位 " + slot + " 无效或与导航栏冲突，已跳过");
+                plugin.getLogger().warning("配置项 pages.items 的槽位 " + slot
+                        + " 无效或与导航栏冲突，已跳过");
                 continue;
             }
-            Material material = Material.matchMaterial(itemSec.getString("material", ""));
+            Material material = Material.matchMaterial(asString(itemMap.get("material"), ""));
             if (material == null) {
-                plugin.getLogger().warning("配置项 pages." + pageSec.getName() + ".items." + key
-                        + " 的材质无效，已跳过");
+                plugin.getLogger().warning("配置项 pages.items 的材质无效，已跳过");
                 continue;
             }
             item.setSlot(slot);
             item.setMaterial(material);
-            item.setName(itemSec.getString("name", ""));
-            item.setLore(itemSec.getStringList("lore"));
-            item.setCommands(loadCommands(itemSec.getConfigurationSection("commands")));
+            item.setName(asString(itemMap.get("name"), ""));
+            item.setLore(asStringList(itemMap.get("lore")));
+            item.setCommands(loadCommands(itemMap.get("commands")));
             page.getItems().add(item);
         }
     }
 
-    private List<CommandEntry> loadCommands(ConfigurationSection cmdSection) {
+    private List<CommandEntry> loadCommands(Object commandsObj) {
         List<CommandEntry> commands = new ArrayList<>();
-        if (cmdSection == null) {
+        if (!(commandsObj instanceof List)) {
             return commands;
         }
-        for (String key : cmdSection.getKeys(false)) {
-            ConfigurationSection cmdSec = cmdSection.getConfigurationSection(key);
-            if (cmdSec == null) {
+        for (Object cmdObj : (List<?>) commandsObj) {
+            if (!(cmdObj instanceof Map<?, ?> cmdMap)) {
                 continue;
             }
-            String type = cmdSec.getString("type", "player");
-            String command = cmdSec.getString("command", "");
+            String type = asString(cmdMap.get("type"), "player");
+            String command = asString(cmdMap.get("command"), "");
             if (!command.isEmpty()) {
                 commands.add(new CommandEntry(type, command));
             }
         }
         return commands;
+    }
+
+    private String asString(Object value, String fallback) {
+        return value == null ? fallback : String.valueOf(value);
+    }
+
+    private int asInt(Object value, int fallback) {
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        try {
+            return value == null ? fallback : Integer.parseInt(String.valueOf(value).trim());
+        } catch (NumberFormatException ex) {
+            return fallback;
+        }
+    }
+
+    private List<String> asStringList(Object value) {
+        List<String> result = new ArrayList<>();
+        if (value instanceof List) {
+            for (Object line : (List<?>) value) {
+                result.add(String.valueOf(line));
+            }
+        }
+        return result;
     }
 
     /** 把内存中的菜单数据写回 config.yml（在线编辑后调用）。 */
